@@ -1,52 +1,40 @@
 <?php
+// Include PHPMailer files (CORRECT PATH)
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer/src/Exception.php';
+
+// Import classes
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require __DIR__ . '/PHPMailer/src/Exception.php';
-require __DIR__ . '/PHPMailer/src/PHPMailer.php';
-require __DIR__ . '/PHPMailer/src/SMTP.php';
-
-function sendPDFMail($to, $pdfPath){
-
+// Create instance
 $mail = new PHPMailer(true);
 
 try {
-
+    // Server settings
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
+    $mail->Host = 'smtp.gmail.com';        // SMTP server
     $mail->SMTPAuth = true;
-
-    // ✅ YOUR EMAIL HERE
-    $mail->Username = 'yourprojecthr@gmail.com';
-
-    // ✅ YOUR APP PASSWORD (NOT normal password)
-    $mail->Password = 'yclqgtxnavafjaqa';
-
+    $mail->Username = 'yourprojecthr@gmail.com';   // 🔴 Replace with your email
+    $mail->Password = 'yclqgtxnavafjaqa';      // 🔴 Replace with app password
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
-    $mail->setFrom('yourprojecthr@gmail.com', 'HR System');
-    $mail->addAddress($to);
+    // Sender & Receiver
+    $mail->setFrom('yourprojecthr@gmail.com', 'Salary System');
+    $mail->addAddress('yourprojecthr@gmail.com'); // 🔴 Replace
 
-    // ✅ REQUIRED (YOU MISSED THIS BEFORE)
+    // Email content
     $mail->isHTML(true);
+    $mail->Subject = 'Salary Generated';
+    $mail->Body    = '<h3>Your salary has been generated successfully.</h3>';
 
-    $mail->Subject = 'Salary Slip';
-    $mail->Body    = 'Please find your salary slip attached.';
-
-    // ✅ ATTACH PDF
-    if(file_exists($pdfPath)){
-        $mail->addAttachment($pdfPath);
-    } else {
-        die("PDF NOT FOUND FOR EMAIL");
-    }
-
+    // Send email
     $mail->send();
-
-    return true;
+    echo "Email sent successfully";
 
 } catch (Exception $e) {
-    echo "MAIL ERROR: " . $mail->ErrorInfo;
-}
+    echo "Message could not be sent. Error: {$mail->ErrorInfo}";
 }
 ?>
