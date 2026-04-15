@@ -4,8 +4,8 @@ include("layout.php");
 include_once("send_mail.php");
 
 /* DOMPDF */
-require __DIR__ . '/dompdf/autoload.inc.php';
-
+require 'dompdf/autoload.inc.php';
+use Dompdf\Dompdf;
 use Dompdf\Dompdf;
 $msg = "";
 
