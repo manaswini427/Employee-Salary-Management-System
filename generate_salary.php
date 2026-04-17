@@ -3,8 +3,6 @@ include("db.php");
 include("layout.php");
 include_once("send_mail.php");
 
-/* DOMPDF */
-require 'dompdf/autoload.inc.php';
 $msg = "";
 
 if(isset($_POST['generate'])){
@@ -66,45 +64,16 @@ if(isset($_POST['generate'])){
             /* GET LAST INSERTED ID */
             $salary_id = mysqli_insert_id($conn);
 
-            /* FETCH DATA FOR PDF */
-            $data = mysqli_fetch_assoc(mysqli_query($conn, "
-    SELECT s.*, e.name 
-    FROM salary s
-    JOIN employees e ON s.employee_id = e.emp_id
-    WHERE s.salary_id='$salary_id'
-"));
+            /* CREATE PRINT LINK */
+            $link = "print_salary.php?id=".$salary_id;
 
-            /* HTML FOR PDF */
-            $html = "
-            <h2 style='text-align:center;'>Salary Slip</h2>
-            <hr>
-            <p><b>Name:</b> {$data['name']}</p>
-            <p><b>Month:</b> {$data['month']} {$data['year']}</p>
-            <p><b>Basic:</b> ₹{$data['basic_salary']}</p>
-            <p><b>Allowances:</b> ₹{$data['allowances']}</p>
-            <p><b>Deductions:</b> ₹{$data['deductions']}</p>
-            <hr>
-            <h3>Net Salary: ₹{$data['net_salary']}</h3>
-            ";
+            /* SEND EMAIL (LINK INSTEAD OF PDF) */
+            sendMail($emp['email'], $link);
 
-            /* CREATE PDF */
-            $dompdf = new \Dompdf\Dompdf();   
-            $dompdf->loadHtml($html);
-            $dompdf->render();
-
-            /* CREATE FOLDER */
-            if(!is_dir("salary_slips")){
-                mkdir("salary_slips");
-            }
-
-            /* SAVE PDF */
-            $pdfPath = "salary_slips/salary_".$salary_id.".pdf";
-            file_put_contents($pdfPath, $dompdf->output());
-
-            /* SEND EMAIL WITH PDF */
-            sendPDFMail($emp['email'], $pdfPath);
-
-            $msg = "<div class='alert alert-success'>Salary Generated, PDF Created & Sent!</div>";
+            $msg = "<div class='alert alert-success'>
+            Salary Generated Successfully! <br>
+            <a href='$link' target='_blank'>Print / Download Salary Slip</a>
+            </div>";
         }
     }
 }
