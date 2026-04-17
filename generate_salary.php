@@ -6,7 +6,6 @@ include_once("send_mail.php");
 /* DOMPDF */
 require 'dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
-use Dompdf\Dompdf;
 $msg = "";
 
 if(isset($_POST['generate'])){
