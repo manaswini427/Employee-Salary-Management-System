@@ -1,5 +1,5 @@
 <?php
-// Include PHPMailer files (CORRECT PATH)
+// Include PHPMailer files
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 require 'PHPMailer/src/Exception.php';
@@ -8,33 +8,47 @@ require 'PHPMailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Create instance
-$mail = new PHPMailer(true);
+/* FUNCTION TO SEND MAIL */
+function sendMail($to, $link){
 
-try {
-    // Server settings
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';        // SMTP server
-    $mail->SMTPAuth = true;
-    $mail->Username = 'yourprojecthr@gmail.com';   // 🔴 Replace with your email
-    $mail->Password = 'yclqgtxnavafjaqa';      // 🔴 Replace with app password
-    $mail->SMTPSecure = 'tls';
-    $mail->Port = 587;
+    $mail = new PHPMailer(true);
 
-    // Sender & Receiver
-    $mail->setFrom('yourprojecthr@gmail.com', 'Salary System');
-    $mail->addAddress('yourprojecthr@gmail.com'); // 🔴 Replace
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
 
-    // Email content
-    $mail->isHTML(true);
-    $mail->Subject = 'Salary Generated';
-    $mail->Body    = '<h3>Your salary has been generated successfully.</h3>';
+        // 🔴 YOUR EMAIL
+        $mail->Username   = 'yourprojecthr@gmail.com';
 
-    // Send email
-    $mail->send();
-    echo "Email sent successfully";
+        // 🔴 APP PASSWORD (keep your existing one)
+        $mail->Password   = 'yclqgtxnavafjaqa';
 
-} catch (Exception $e) {
-    echo "Message could not be sent. Error: {$mail->ErrorInfo}";
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
+
+        // Sender
+        $mail->setFrom('yourprojecthr@gmail.com', 'Salary Management System');
+
+        // Receiver (dynamic)
+        $mail->addAddress($to);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Salary Slip Generated';
+
+        $mail->Body = "
+            <h3>Your Salary Slip is Ready</h3>
+            <p>Click below to view/download:</p>
+            <a href='$link' target='_blank'>View Salary Slip</a>
+        ";
+
+        // Send
+        $mail->send();
+
+    } catch (Exception $e) {
+        echo "Mail Error: {$mail->ErrorInfo}";
+    }
 }
 ?>
