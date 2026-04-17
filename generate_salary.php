@@ -88,7 +88,7 @@ if(isset($_POST['generate'])){
             ";
 
             /* CREATE PDF */
-            $dompdf = new Dompdf();
+            $dompdf = new \Dompdf\Dompdf();   
             $dompdf->loadHtml($html);
             $dompdf->render();
 
